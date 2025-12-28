@@ -1,192 +1,233 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2025 Dual Grid Poster</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2025 Archive Receipt</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
-        body, .order-number, .bracket, .footer-year {
-            font-family: "Helvetica", "Arial", sans-serif;
-            font-weight: 400;
-            color: #000;
-            -webkit-font-smoothing: antialiased;
-        }
+      /* Helvetica Thin 스타일 설정 */
+      body {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        -webkit-font-smoothing: antialiased;
+      }
 
-        body {
-            margin: 0; padding: 0;
-            background-color: #f4f4f4;
-            display: flex; flex-direction: column; align-items: center;
-        }
+      #poster-area {
+        width: 360px;
+        background-color: #fff;
+        padding: 40px 20px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-        /* 16:9 비율 포스터 영역 */
-        #poster-area {
-            width: 360px; 
-            height: 640px; 
-            background-color: #fff;
-            display: flex;
-            flex-direction: column;
-            padding: 20px 15px;
-            box-sizing: border-box;
-        }
+      /* 1. 상단 로고 이미지 영역 */
+      .header-image-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 50px;
+      }
 
-        /* 2025 상단 배치 */
-        .header-year {
-            font-size: 85px;
-            text-align: center;
-            line-height: 0.8;
-            letter-spacing: -4px;
-            margin-bottom: 30px;
-            border-bottom: 8px solid #000;
-            padding-bottom: 10px;
-        }
+      .header-image-container img {
+        width: 240px; /* 로고 크기에 맞게 조절 */
+        height: auto;
+      }
 
-        /* 2열 그리드 배치 */
-        #gallery {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* 2열 */
-            grid-template-rows: repeat(6, 1fr); /* 6행 */
-            gap: 20px 10px;
-            flex-grow: 1;
-        }
+      /* 2. Thin 그리드 시스템 */
+      #gallery {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 10px;
+        row-gap: 35px; /* 행 간격을 넓혀 시원하게 배치 */
+        width: 100%;
+      }
 
-        .bracket-set {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-        }
+      .item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-        .order-number {
-            font-size: 16px;
-            margin-right: 4px;
-            min-width: 22px;
-            text-align: right;
-        }
+      /* 숫자 Thin 변경 */
+      .num {
+        font-size: 40px;
+        font-weight: 500; /* 가장 가늘게 */
+        letter-spacing: -0.5px;
+        color: #000;
+      }
 
-        .bracket {
-            font-size: 30px;
-            line-height: 1;
-        }
+      /* 괄호 Thin 변경 */
+      .bracket {
+        font-size: 42px;
+        font-weight: 500; /* 가장 가늘게 */
+        margin: 0 2px;
+        color: #000;
+        line-height: 1;
+        transform: scaleY(1.1); /* 괄호를 위아래로 살짝 늘려 세련되게 */
+      }
 
-        .image-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 5px;
-            flex-grow: 1;
-            height: 50px; /* 2열 배치에 맞춘 높이 */
-        }
+      /* 이미지 박스 (크기 확대) */
+      .img-placeholder {
+        width: 70px; /* 괄호 사이 이미지 폭 확대 */
+        height: 45px; /* 이미지 높이 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: 0 2px;
+      }
 
-        .image-box img {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            display: block;
-        }
+      .img-placeholder img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
 
-        .controls {
-            position: fixed; bottom: 20px;
-            display: flex; flex-direction: column; gap: 10px;
-            z-index: 1000;
-        }
+      /* 3. 하단 바코드 및 텍스트 */
+      .footer {
+        width: 100%;
+        margin-top: 60px;
+        border-top: 1px solid #000; /* 라인도 얇게 */
+        padding-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-        .btn {
-            background: #000; color: #fff;
-            padding: 15px 40px; border-radius: 50px;
-            font-weight: bold; border: none; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        
-        #save-btn { display: none; background: #007AFF; }
-        #file-input { display: none; }
+      .barcode {
+        width: 100%;
+        height: 50px;
+        background: repeating-linear-gradient(
+          90deg,
+          #000 0px,
+          #000 1px,
+          #fff 1px,
+          #fff 3px,
+          #000 3px,
+          #000 4px,
+          #fff 4px,
+          #fff 7px
+        );
+        margin-bottom: 15px;
+      }
+
+      .footer-input {
+        width: 100%;
+        border: none;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 300; /* 하단 텍스트도 Thin */
+        font-family: inherit;
+        letter-spacing: 5px;
+        text-transform: lowercase;
+        outline: none;
+        background: transparent;
+      }
+
+      /* 컨트롤 버튼 (화면 캡처 시 제외됨) */
+      .controls {
+        margin: 40px 0;
+        display: flex;
+        gap: 15px;
+      }
+
+      .btn {
+        background: #eee;
+        color: #000;
+        border: 1px solid #ddd;
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-weight: 400;
+        cursor: pointer;
+        font-size: 13px;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div id="poster-area">
-        <div class="header-year">2025</div>
-        <div id="gallery"></div>
+      <div class="header-image-container">
+        <img
+          src="2025_logo.png"
+          alt="2025"
+          id="top-logo"
+          onerror="this.style.display='none'"
+        />
+      </div>
+
+      <div id="gallery"></div>
+
+      <div class="footer">
+        <div class="barcode"></div>
+        <input type="text" class="footer-input" value="goodbye 2025" />
+      </div>
     </div>
 
     <div class="controls">
-        <label for="file-input" id="upload-label" class="btn">사진 선택 (0/12)</label>
-        <input type="file" id="file-input" accept="image/*" multiple>
-        <button id="save-btn" class="btn">사진 저장하기</button>
+      <input type="file" id="file-input" multiple hidden />
+      <button
+        class="btn"
+        onclick="document.getElementById('file-input').click()"
+      >
+        사진 선택
+      </button>
+      <button class="btn" id="save-btn" style="background: #000; color: #fff">
+        이미지 저장
+      </button>
     </div>
 
     <script>
-        const fileInput = document.getElementById('file-input');
-        const gallery = document.getElementById('gallery');
-        const saveBtn = document.getElementById('save-btn');
-        const uploadLabel = document.getElementById('upload-label');
-        let photoCount = 0;
+      const gallery = document.getElementById('gallery');
+      const fileInput = document.getElementById('file-input');
+      const saveBtn = document.getElementById('save-btn');
+      let count = 0;
 
-        fileInput.addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            files.forEach((file) => {
-                if (photoCount >= 12) return;
-                photoCount++;
-                const currentNum = photoCount;
-                uploadLabel.innerText = `사진 추가 (${photoCount}/12)`;
+      for (let i = 1; i <= 12; i++) {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+                <span class="num">${String(i).padStart(2, '0')}</span>
+                <span class="bracket">(</span>
+                <div class="img-placeholder" id="img-${i}"></div>
+                <span class="bracket">)</span>
+            `;
+        gallery.appendChild(div);
+      }
 
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const bracketSet = document.createElement('div');
-                    bracketSet.className = 'bracket-set';
-                    const formattedNum = currentNum < 10 ? '0' + currentNum : currentNum;
-
-                    bracketSet.innerHTML = `
-                        <span class="order-number">${formattedNum}</span>
-                        <div class="bracket">(</div>
-                        <div class="image-box"><img src="${event.target.result}"></div>
-                        <div class="bracket">)</div>
-                    `;
-                    gallery.appendChild(bracketSet);
-
-                    if (photoCount === 12) {
-                        uploadLabel.style.display = 'none';
-                        saveBtn.style.display = 'block';
-                    }
-                };
-                reader.readAsDataURL(file);
-            });
-            fileInput.value = "";
+      fileInput.onchange = (e) => {
+        const files = Array.from(e.target.files);
+        files.forEach((file) => {
+          if (count >= 12) return;
+          count++;
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            document.getElementById(
+              `img-${count}`
+            ).innerHTML = `<img src="${ev.target.result}">`;
+          };
+          reader.readAsDataURL(file);
         });
+      };
 
-        saveBtn.addEventListener('click', function() {
-            const poster = document.getElementById('poster-area');
-            window.scrollTo(0, 0);
-
-            html2canvas(poster, {
-                scale: 3, 
-                useCORS: true,
-                backgroundColor: "#ffffff",
-                width: 360,
-                height: 640
-            }).then(canvas => {
-                const image = canvas.toDataURL("image/png");
-                
-                // 즉시 다운로드 시도
-                const link = document.createElement('a');
-                link.href = image;
-                link.download = '2025_Archive_Poster.png';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-
-                // 아이폰 사용자를 위한 백업 안내 (새 창)
-                setTimeout(() => {
-                    const newTab = window.open();
-                    newTab.document.write(`<body style="margin:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh;">
-                        <img src="${image}" style="width:90%; max-width:400px; border:5px solid white;">
-                        <p style="color:white; font-family:sans-serif; margin-top:20px;">자동 다운로드가 안되면<br>이미지를 꾹 눌러 저장하세요!</p>
-                    </body>`);
-                }, 500);
-            });
+      saveBtn.onclick = () => {
+        html2canvas(document.getElementById('poster-area'), {
+          scale: 3,
+          backgroundColor: '#ffffff',
+        }).then((canvas) => {
+          const link = document.createElement('a');
+          link.download = '2025_thin_receipt.png';
+          link.href = canvas.toDataURL();
+          link.click();
         });
+      };
     </script>
-</body>
+  </body>
 </html>
+
