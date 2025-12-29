@@ -3,40 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2025 Archive - Pixel Log</title>
+    <title>2025 Memory Receipt</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
+      :root {
+        --bg: #000000;
+        --paper: #ffffff;
+      }
+
       body {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        background-color: var(--bg);
         margin: 0;
-        padding: 0;
-        background-color: #000000;
+        padding: 50px 0;
         display: flex;
         flex-direction: column;
         align-items: center;
         -webkit-font-smoothing: antialiased;
       }
 
-      /* 원본 규격 380px 유지 */
       #poster-area {
         width: 380px;
-        background-color: #ffffff;
-        padding: 60px 15px;
+        background-color: var(--paper);
+        padding: 50px 25px 40px;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: center;
-        overflow: hidden;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+        transition: all 0.5s ease;
+        position: relative;
       }
 
+      /* 2025 Logo Header */
       .header-box {
         background-color: #000;
-        width: 280px;
-        height: 140px;
+        width: 260px;
+        height: 130px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 60px;
+        margin-bottom: 20px;
       }
       .white-oval {
         background-color: #fff;
@@ -49,127 +56,217 @@
       }
       .white-oval span {
         color: #000;
-        font-size: 85px;
+        font-size: 80px;
         font-weight: 900;
-        letter-spacing: -4px;
+        letter-spacing: px;
         line-height: 1;
       }
 
-      #gallery {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        column-gap: 5px;
-        row-gap: 40px;
+      .project-description {
+        text-align: center;
         width: 100%;
+        margin-bottom: 40px;
+        font-size: 11px;
+        line-height: 1.6;
+        color: #333;
+        font-weight: 500;
       }
-
-      .item {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 0;
-      }
-
-      .num {
-        width: 30px;
-        font-size: 24px;
+      .project-description .title {
+        display: block;
         font-weight: 800;
-        letter-spacing: -1px;
-        text-align: right;
-        margin-right: 4px;
-        flex-shrink: 0;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+        text-transform: uppercase;
       }
 
-      .bracket {
-        font-size: 50px;
-        font-weight: 800;
-        line-height: 1;
-        flex-shrink: 0;
-        color: #000;
+      .receipt-title {
+        text-align: center;
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #000;
+        width: 100%;
+        padding-bottom: 8px;
       }
 
-      .img-placeholder {
-        width: 90px;
-        height: 65px;
-        margin: 0 2px;
+      .gallery-wrapper {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .item-row {
         display: flex;
-        align-items: center;
-        justify-content: center;
+        flex-direction: column;
+        border-bottom: 1px dashed #eee;
+        transition: all 0.4s ease;
         overflow: hidden;
-        flex-shrink: 0;
       }
 
-      .img-placeholder img {
-        max-width: 100%;
-        max-height: 100%;
-        width: auto;
+      .item-row.folded {
+        max-height: 45px;
+        opacity: 0.4;
+        filter: grayscale(1);
+      }
+      .item-row.folded .img-container,
+      .item-row.folded .caption-input {
+        display: none;
+      }
+      .item-row.active {
+        max-height: 1200px;
+        opacity: 1;
+        padding: 20px 0;
+      }
+
+      .item-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: 45px;
+      }
+      .img-container {
+        width: 100%;
+        margin: 5px 0;
+        cursor: pointer;
+      }
+      .img-container img {
+        width: 100%;
         height: auto;
-        object-fit: contain; /* 원본 비율 유지 */
         display: block;
       }
 
-      .footer {
+      .placeholder-btn {
         width: 100%;
-        margin-top: 70px;
-        border-top: 3.5px solid #000;
-        padding-top: 30px;
+        padding: 35px 0;
+        background: #f9f9f9;
         text-align: center;
+        font-size: 9px;
+        color: #aaa;
+        border: 1px dashed #ccc;
+        font-weight: 700;
       }
 
-      .barcode-container {
+      .caption-input {
         width: 100%;
-        height: 60px;
+        border: none;
+        border-bottom: 1px solid #000;
+        font-family: inherit;
+        font-size: 12px;
+        padding: 8px 0;
+        outline: none;
+        background: transparent;
+        font-weight: 500;
+      }
+
+      #footer-area {
+        display: none;
+        margin-top: 25px;
+        border-top: 2px solid #000;
+        padding-top: 25px;
+        text-align: center;
+        width: 100%;
+      }
+
+      .barcode {
+        width: 100%;
+        height: 45px;
         display: flex;
-        justify-content: space-between;
-        align-items: stretch;
-        margin-bottom: 15px;
+        justify-content: center;
+        margin-bottom: 12px;
       }
       .b-line {
-        background-color: #000;
-        flex-shrink: 0;
+        background: #000;
+        height: 100%;
+        margin: 0 1px;
       }
 
-      /* 날짜 및 프로젝트 제목 영역 */
-      .meta-info {
-        font-size: 14px;
+      /* Goodbye 2025 Footer Styles */
+      .status-box {
+        font-size: 20px;
         font-weight: 900;
+        margin: 15px 0 5px 0;
+        border: 2px solid #000;
+        display: inline-block;
+        padding: 5px 20px;
+        text-transform: uppercase;
         letter-spacing: 1px;
-        margin-bottom: 20px;
-        color: #000;
+      }
+      .footer-note {
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        margin-top: 8px;
+        color: #444;
         text-transform: uppercase;
       }
 
-      .footer-text-display {
+      .zigzag-bottom {
+        position: absolute;
+        bottom: -10px;
+        left: 0;
         width: 100%;
-        font-size: 15px;
-        font-weight: 800;
-        letter-spacing: 1px;
-        color: #000;
-        text-transform: uppercase;
-        outline: none;
+        height: 10px;
+        background: linear-gradient(-45deg, var(--bg) 5px, transparent 0),
+          linear-gradient(45deg, var(--bg) 5px, transparent 0);
+        background-size: 12px 12px;
+        display: none;
+      }
+
+      /* Final 3-column Layout for Download */
+      #poster-area.final-reveal {
+        width: 650px;
+      }
+      #poster-area.final-reveal .gallery-wrapper {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+      }
+      #poster-area.final-reveal .item-row {
+        max-height: 800px !important;
+        opacity: 1 !important;
+        filter: none !important;
+        padding: 10px 0 !important;
+        border-bottom: 1px solid #eee;
+      }
+      #poster-area.final-reveal .zigzag-bottom {
+        display: block;
+      }
+      #poster-area.final-reveal .caption-input {
         border: none;
-        background: transparent;
+        font-size: 10px;
+        text-align: center;
+        padding-top: 5px;
       }
 
       .controls {
-        margin: 40px 0;
+        position: fixed;
+        bottom: 30px;
         display: flex;
-        flex-direction: row;
         gap: 10px;
         width: 380px;
-        justify-content: center;
+        z-index: 100;
       }
       .btn {
         flex: 1;
-        background: #ffffff;
-        color: #000000;
+        padding: 18px;
         border: none;
-        padding: 14px 0;
         border-radius: 50px;
+        background: #000;
+        color: #fff;
         font-weight: bold;
         cursor: pointer;
-        font-size: 13px;
-        text-align: center;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        font-family: inherit;
+        text-transform: uppercase;
+        font-size: 11px;
+      }
+      #save-btn {
+        background: #ff3b30;
+        display: none;
       }
     </style>
   </head>
@@ -178,97 +275,146 @@
       <div class="header-box">
         <div class="white-oval"><span>2025</span></div>
       </div>
-      <div id="gallery"></div>
-      <div class="footer">
-        <div class="barcode-container" id="barcode-area"></div>
 
-        <div class="meta-info">
-          <span id="current-date">0000.00.00</span> |
-          <span contenteditable="true" id="project-title">2025 CHECKOUT</span>
-        </div>
+      <div class="project-description">
+        <span class="title">Yearly Checkout: Monthly Archive</span>
 
-        <div class="footer-text-display" id="remarks" contenteditable="true">
-          ENTER YOUR 2025 CLOSING REMARKS
-        </div>
+        *Select a photo for each month to recall your memory. <br />
+        *Type a short note and press 'Enter' to confirm. <br />
+        *Complete all 12 months to generate your 2025 receipt.
       </div>
+
+      <div class="receipt-title">Memory Receipt</div>
+
+      <div id="gallery-container" class="gallery-wrapper"></div>
+
+      <div id="footer-area">
+        <div class="barcode" id="barcode"></div>
+        <div class="status-box">GOODBYE 2025</div>
+        <div class="footer-note">Moments pass, but records remain.</div>
+        <p
+          id="current-date"
+          style="font-size: 8px; color: #aaa; margin-top: 20px"
+        ></p>
+      </div>
+
+      <div class="zigzag-bottom"></div>
     </div>
 
     <div class="controls">
-      <input type="file" id="file-input" multiple hidden />
-      <button
-        class="btn"
-        onclick="document.getElementById('file-input').click()"
-      >
-        SELECT PHOTOS
-      </button>
-      <button class="btn" id="save-btn">SAVE IMAGE</button>
+      <input type="file" id="file-input" hidden accept="image/*" />
+      <button class="btn" id="save-btn">Download Memory Poster</button>
     </div>
 
     <script>
-      const gallery = document.getElementById('gallery');
-      const barcodeArea = document.getElementById('barcode-area');
+      const gallery = document.getElementById('gallery-container');
       const fileInput = document.getElementById('file-input');
+      const footer = document.getElementById('footer-area');
       const saveBtn = document.getElementById('save-btn');
-      const dateElement = document.getElementById('current-date');
-      let count = 0;
+      const poster = document.getElementById('poster-area');
 
-      // 오늘 날짜 설정 (YYYY.MM.DD)
-      const now = new Date();
-      dateElement.innerText = `${now.getFullYear()}.${String(
-        now.getMonth() + 1
-      ).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
-
-      const pattern = [
-        2, 1, 4, 1, 2, 3, 2, 5, 1, 2, 4, 1, 3, 2, 1, 2, 4, 1, 3, 1, 2, 5, 1, 2,
-        4, 1, 3, 2, 1, 2, 4, 1, 3, 2, 1, 2, 4, 1, 3, 2, 1, 2, 4, 1, 3, 2,
+      const monthNames = [
+        'JANUARY',
+        'FEBRUARY',
+        'MARCH',
+        'APRIL',
+        'MAY',
+        'JUNE',
+        'JULY',
+        'AUGUST',
+        'SEPTEMBER',
+        'OCTOBER',
+        'NOVEMBER',
+        'DECEMBER',
       ];
-      pattern.forEach((w) => {
-        const line = document.createElement('div');
-        line.className = 'b-line';
-        line.style.width = w + 'px';
-        barcodeArea.appendChild(line);
-      });
+      let currentIdx = 1;
 
-      for (let i = 1; i <= 12; i++) {
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.innerHTML = `
-                <span class="num">${String(i).padStart(2, '0')}</span>
-                <span class="bracket">(</span>
-                <div class="img-placeholder" id="img-${i}"></div>
-                <span class="bracket">)</span>
-            `;
-        gallery.appendChild(div);
+      function createItemRow(idx) {
+        const row = document.createElement('div');
+        row.className = 'item-row active';
+        row.id = `row-${idx}`;
+        row.innerHTML = `
+          <div class="item-meta"><span>#${String(idx).padStart(
+            2,
+            '0'
+          )}</span><span>${monthNames[idx - 1]}</span></div>
+          <div class="img-container" onclick="triggerUpload(${idx})">
+            <div id="img-slot-${idx}" class="placeholder-btn">SELECT ${
+          monthNames[idx - 1]
+        } PHOTO</div>
+          </div>
+          <input type="text" class="caption-input" placeholder="Type a memory..." id="input-${idx}" onkeypress="handleNext(event, ${idx})">
+        `;
+        gallery.appendChild(row);
+        setTimeout(() => {
+          row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+
+      createItemRow(1);
+      function triggerUpload(idx) {
+        if (idx === currentIdx) fileInput.click();
       }
 
       fileInput.onchange = (e) => {
-        const files = Array.from(e.target.files);
-        files.forEach((file) => {
-          if (count >= 12) return;
-          count++;
-          const reader = new FileReader();
-          reader.onload = (ev) => {
-            document.getElementById(
-              `img-${count}`
-            ).innerHTML = `<img src="${ev.target.result}">`;
-          };
-          reader.readAsDataURL(file);
-        });
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const slot = document.getElementById(`img-slot-${currentIdx}`);
+          slot.innerHTML = `<img src="${ev.target.result}">`;
+          slot.classList.remove('placeholder-btn');
+          document.getElementById(`input-${currentIdx}`).focus();
+        };
+        reader.readAsDataURL(file);
       };
 
+      function handleNext(event, idx) {
+        if (event.key === 'Enter') {
+          if (!document.querySelector(`#img-slot-${idx} img`)) {
+            alert('Please upload a photo first!');
+            return;
+          }
+          document
+            .getElementById(`row-${idx}`)
+            .classList.replace('active', 'folded');
+          if (currentIdx < 12) {
+            currentIdx++;
+            createItemRow(currentIdx);
+          } else {
+            showFooter();
+          }
+        }
+      }
+
+      function showFooter() {
+        footer.style.display = 'block';
+        saveBtn.style.display = 'block';
+        const bc = document.getElementById('barcode');
+        bc.innerHTML = '';
+        for (let i = 0; i < 35; i++) {
+          const line = document.createElement('div');
+          line.className = 'b-line';
+          line.style.width = Math.random() * 2 + 1 + 'px';
+          bc.appendChild(line);
+        }
+        document.getElementById('current-date').innerText =
+          new Date().toLocaleString('en-US');
+      }
+
       saveBtn.onclick = () => {
-        window.getSelection().removeAllRanges();
-        html2canvas(document.getElementById('poster-area'), {
-          scale: 4,
-          useCORS: true,
-          backgroundColor: '#ffffff',
-        }).then((canvas) => {
-          const link = document.createElement('a');
-          link.download = `Archive_2025.png`;
-          link.href = canvas.toDataURL('image/png');
-          link.click();
-        });
+        poster.classList.add('final-reveal');
+        setTimeout(() => {
+          html2canvas(poster, { scale: 3, useCORS: true }).then((canvas) => {
+            const link = document.createElement('a');
+            link.download = '2025_Memory_Archive.png';
+            link.href = canvas.toDataURL();
+            link.click();
+            poster.classList.remove('final-reveal');
+          });
+        }, 800);
       };
     </script>
   </body>
 </html>
+
