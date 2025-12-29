@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2025 Archive Receipt</title>
+    <title>2025 Archive - Minimal Style</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
-      /* Helvetica Thin 스타일 설정 */
       body {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #fff;
+        background-color: #f0f0f0;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -19,34 +18,47 @@
       }
 
       #poster-area {
-        width: 360px;
-        background-color: #fff;
-        padding: 40px 20px;
+        width: 380px;
+        background-color: #ffffff;
+        padding: 60px 15px;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: center;
+        overflow: hidden;
       }
 
-      /* 1. 상단 로고 이미지 영역 */
-      .header-image-container {
-        width: 100%;
+      .header-box {
+        background-color: #000;
+        width: 280px;
+        height: 140px;
         display: flex;
+        align-items: center;
         justify-content: center;
-        margin-bottom: 50px;
+        margin-bottom: 60px;
+      }
+      .white-oval {
+        background-color: #fff;
+        width: 92%;
+        height: 85%;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .white-oval span {
+        color: #000;
+        font-size: 85px;
+        font-weight: 900;
+        letter-spacing: -4px;
+        line-height: 1;
       }
 
-      .header-image-container img {
-        width: 240px; /* 로고 크기에 맞게 조절 */
-        height: auto;
-      }
-
-      /* 2. Thin 그리드 시스템 */
       #gallery {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        column-gap: 10px;
-        row-gap: 35px; /* 행 간격을 넓혀 시원하게 배치 */
+        column-gap: 5px;
+        row-gap: 40px;
         width: 100%;
       }
 
@@ -54,119 +66,114 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        min-width: 0;
       }
 
-      /* 숫자 Thin 변경 */
       .num {
-        font-size: 40px;
-        font-weight: 500; /* 가장 가늘게 */
-        letter-spacing: -0.5px;
-        color: #000;
+        width: 30px;
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        text-align: right;
+        margin-right: 4px;
+        flex-shrink: 0;
       }
 
-      /* 괄호 Thin 변경 */
       .bracket {
-        font-size: 42px;
-        font-weight: 500; /* 가장 가늘게 */
-        margin: 0 2px;
-        color: #000;
+        font-size: 50px;
+        font-weight: 800;
         line-height: 1;
-        transform: scaleY(1.1); /* 괄호를 위아래로 살짝 늘려 세련되게 */
+        flex-shrink: 0;
+        color: #000;
       }
 
-      /* 이미지 박스 (크기 확대) */
       .img-placeholder {
-        width: 70px; /* 괄호 사이 이미지 폭 확대 */
-        height: 45px; /* 이미지 높이 */
+        width: 90px;
+        height: 65px;
+        margin: 0 2px;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        margin: 0 2px;
+        flex-shrink: 0;
       }
 
       .img-placeholder img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
       }
 
-      /* 3. 하단 바코드 및 텍스트 */
       .footer {
         width: 100%;
-        margin-top: 60px;
-        border-top: 1px solid #000; /* 라인도 얇게 */
-        padding-top: 20px;
+        margin-top: 70px;
+        border-top: 3.5px solid #000;
+        padding-top: 30px;
+      }
+
+      .barcode-container {
+        width: 100%;
+        height: 60px;
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        justify-content: space-between;
+        align-items: stretch;
+        margin-bottom: 30px; /* 숫자 없어진 만큼 여백 조정 */
+      }
+      .b-line {
+        background-color: #000;
+        flex-shrink: 0;
       }
 
-      .barcode {
+      .footer-text-display {
         width: 100%;
-        height: 50px;
-        background: repeating-linear-gradient(
-          90deg,
-          #000 0px,
-          #000 1px,
-          #fff 1px,
-          #fff 3px,
-          #000 3px,
-          #000 4px,
-          #fff 4px,
-          #fff 7px
-        );
-        margin-bottom: 15px;
-      }
-
-      .footer-input {
-        width: 100%;
-        border: none;
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        color: #000;
+        text-transform: uppercase;
         text-align: center;
-        font-size: 14px;
-        font-weight: 300; /* 하단 텍스트도 Thin */
-        font-family: inherit;
-        letter-spacing: 5px;
-        text-transform: lowercase;
         outline: none;
+        border: none;
         background: transparent;
       }
 
-      /* 컨트롤 버튼 (화면 캡처 시 제외됨) */
+      /* 컨트롤 버튼 1열 배치 수정 */
       .controls {
         margin: 40px 0;
         display: flex;
-        gap: 15px;
+        flex-direction: row; /* 가로 배치 */
+        gap: 10px;
+        width: 380px;
+        justify-content: center;
       }
-
       .btn {
-        background: #eee;
-        color: #000;
-        border: 1px solid #ddd;
-        padding: 10px 20px;
-        border-radius: 4px;
-        font-weight: 400;
+        flex: 1; /* 버튼 너비를 동일하게 배분 */
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 14px 0;
+        border-radius: 50px;
+        font-weight: bold;
         cursor: pointer;
         font-size: 13px;
+        text-align: center;
       }
     </style>
   </head>
   <body>
     <div id="poster-area">
-      <div class="header-image-container">
-        <img
-          src="2025_logo.png"
-          alt="2025"
-          id="top-logo"
-          onerror="this.style.display='none'"
-        />
+      <div class="header-box">
+        <div class="white-oval"><span>2025</span></div>
       </div>
-
       <div id="gallery"></div>
-
       <div class="footer">
-        <div class="barcode"></div>
-        <input type="text" class="footer-input" value="goodbye 2025" />
+        <div class="barcode-container" id="barcode-area"></div>
+        <div class="footer-text-display" id="remarks" contenteditable="true">
+          ENTER YOUR 2025 CLOSING REMARKS
+        </div>
       </div>
     </div>
 
@@ -176,19 +183,31 @@
         class="btn"
         onclick="document.getElementById('file-input').click()"
       >
-        사진 선택
+        SELECT PHOTOS
       </button>
-      <button class="btn" id="save-btn" style="background: #000; color: #fff">
-        이미지 저장
-      </button>
+      <button class="btn" id="save-btn">SAVE IMAGE</button>
     </div>
 
     <script>
       const gallery = document.getElementById('gallery');
+      const barcodeArea = document.getElementById('barcode-area');
       const fileInput = document.getElementById('file-input');
       const saveBtn = document.getElementById('save-btn');
       let count = 0;
 
+      // 바코드 생성
+      const pattern = [
+        2, 1, 4, 1, 2, 3, 2, 5, 1, 2, 4, 1, 3, 2, 1, 2, 4, 1, 3, 1, 2, 5, 1, 2,
+        4, 1, 3, 2, 1, 2, 4, 1, 3, 2, 1, 2, 4, 1, 3, 2, 1, 2, 4, 1, 3, 2,
+      ];
+      pattern.forEach((w) => {
+        const line = document.createElement('div');
+        line.className = 'b-line';
+        line.style.width = w + 'px';
+        barcodeArea.appendChild(line);
+      });
+
+      // 12개 그리드 생성
       for (let i = 1; i <= 12; i++) {
         const div = document.createElement('div');
         div.className = 'item';
@@ -217,17 +236,18 @@
       };
 
       saveBtn.onclick = () => {
+        window.getSelection().removeAllRanges();
         html2canvas(document.getElementById('poster-area'), {
-          scale: 3,
+          scale: 4,
+          useCORS: true,
           backgroundColor: '#ffffff',
         }).then((canvas) => {
           const link = document.createElement('a');
-          link.download = '2025_thin_receipt.png';
-          link.href = canvas.toDataURL();
+          link.download = `Archive_2025.png`;
+          link.href = canvas.toDataURL('image/png');
           link.click();
         });
       };
     </script>
   </body>
 </html>
-
