@@ -1,275 +1,439 @@
 <!DOCTYPE html>
+
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>2025 Memory Receipt</title>
+
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
     <style>
       :root {
-        --bg: #000000;
+        --bg: #0b0b0b;
+
         --paper: #ffffff;
+
+        --transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
       }
 
       body {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
         background-color: var(--bg);
+
         margin: 0;
+
         padding: 50px 0;
+
         display: flex;
+
         flex-direction: column;
+
         align-items: center;
+
         -webkit-font-smoothing: antialiased;
+
+        perspective: 1000px; /* 3D 효과를 위한 원근감 */
       }
 
       #poster-area {
         width: 380px;
+
         background-color: var(--paper);
+
         padding: 50px 25px 40px;
+
         box-sizing: border-box;
+
         display: flex;
+
         flex-direction: column;
+
         align-items: center;
-        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
-        transition: all 0.5s ease;
+
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+
+        transition: var(--transition);
+
         position: relative;
+
+        transform-origin: top center;
       }
 
       /* 2025 Logo Header */
+
       .header-box {
         background-color: #000;
+
         width: 260px;
+
         height: 130px;
+
         display: flex;
+
         align-items: center;
+
         justify-content: center;
+
         margin-bottom: 20px;
       }
+
       .white-oval {
         background-color: #fff;
+
         width: 92%;
+
         height: 85%;
+
         border-radius: 100%;
+
         display: flex;
+
         align-items: center;
+
         justify-content: center;
       }
+
       .white-oval span {
         color: #000;
+
         font-size: 80px;
+
         font-weight: 900;
-        letter-spacing: px;
+
         line-height: 1;
       }
 
       .project-description {
         text-align: center;
+
         width: 100%;
+
         margin-bottom: 40px;
+
         font-size: 11px;
+
         line-height: 1.6;
+
         color: #333;
+
         font-weight: 500;
       }
+
       .project-description .title {
         display: block;
+
         font-weight: 800;
+
         font-size: 11px;
+
         letter-spacing: 0.5px;
+
         margin-bottom: 4px;
+
         text-transform: uppercase;
       }
 
       .receipt-title {
         text-align: center;
+
         font-size: 13px;
+
         font-weight: 900;
+
         letter-spacing: 2px;
+
         text-transform: uppercase;
+
         margin-bottom: 20px;
+
         border-bottom: 2px solid #000;
+
         width: 100%;
+
         padding-bottom: 8px;
       }
 
       .gallery-wrapper {
         width: 100%;
+
         display: grid;
+
         grid-template-columns: 1fr;
+
         gap: 0;
       }
 
+      /* --- 접히는 애니메이션 개선 --- */
+
       .item-row {
         display: flex;
+
         flex-direction: column;
+
         border-bottom: 1px dashed #eee;
-        transition: all 0.4s ease;
+
+        transition: var(--transition);
+
         overflow: hidden;
+
+        transform-origin: top;
       }
 
       .item-row.folded {
-        max-height: 45px;
-        opacity: 0.4;
-        filter: grayscale(1);
+        max-height: 40px;
+
+        opacity: 0.3;
+
+        filter: grayscale(1) blur(0.5px);
+
+        transform: rotateX(-15deg); /* 살짝 뒤로 꺾인 느낌 */
+
+        margin-bottom: -5px;
       }
-      .item-row.folded .img-container,
-      .item-row.folded .caption-input {
-        display: none;
-      }
+
       .item-row.active {
         max-height: 1200px;
+
         opacity: 1;
+
         padding: 20px 0;
+
+        transform: rotateX(0deg);
       }
 
       .item-meta {
         display: flex;
+
         justify-content: space-between;
+
         font-size: 11px;
+
         font-weight: 800;
-        line-height: 45px;
+
+        line-height: 40px;
       }
+
       .img-container {
         width: 100%;
+
         margin: 5px 0;
+
         cursor: pointer;
       }
+
       .img-container img {
         width: 100%;
+
         height: auto;
+
         display: block;
       }
 
       .placeholder-btn {
         width: 100%;
-        padding: 35px 0;
-        background: #f9f9f9;
-        text-align: center;
-        font-size: 9px;
-        color: #aaa;
-        border: 1px dashed #ccc;
-        font-weight: 700;
-      }
 
-      .caption-input {
-        width: 100%;
-        border: none;
-        border-bottom: 1px solid #000;
-        font-family: inherit;
-        font-size: 12px;
-        padding: 8px 0;
-        outline: none;
-        background: transparent;
-        font-weight: 500;
+        padding: 40px 0;
+
+        background: #fdfdfd;
+
+        text-align: center;
+
+        font-size: 10px;
+
+        color: #999;
+
+        border: 1px dashed #ddd;
+
+        font-weight: 700;
       }
 
       #footer-area {
         display: none;
+
         margin-top: 25px;
+
         border-top: 2px solid #000;
-        padding-top: 25px;
+
+        padding-top: 30px;
+
         text-align: center;
+
         width: 100%;
       }
+
+      /* --- 바코드 길이 및 디자인 수정 --- */
 
       .barcode {
         width: 100%;
-        height: 45px;
+
+        height: 70px; /* 길이 연장 */
+
         display: flex;
+
         justify-content: center;
-        margin-bottom: 12px;
+
+        align-items: flex-end;
+
+        margin-bottom: 15px;
       }
+
       .b-line {
         background: #000;
+
         height: 100%;
+
         margin: 0 1px;
       }
 
-      /* Goodbye 2025 Footer Styles */
       .status-box {
-        font-size: 20px;
+        font-size: 22px;
+
         font-weight: 900;
+
         margin: 15px 0 5px 0;
-        border: 2px solid #000;
+
+        border: 3px solid #000;
+
         display: inline-block;
-        padding: 5px 20px;
+
+        padding: 5px 25px;
+
         text-transform: uppercase;
+
         letter-spacing: 1px;
       }
+
       .footer-note {
-        font-size: 9px;
+        font-size: 10px;
+
         font-weight: 600;
-        letter-spacing: 0.3px;
-        margin-top: 8px;
+
+        letter-spacing: 0.5px;
+
+        margin-top: 10px;
+
         color: #444;
-        text-transform: uppercase;
       }
 
       .zigzag-bottom {
         position: absolute;
-        bottom: -10px;
+
+        bottom: -15px;
+
         left: 0;
+
         width: 100%;
-        height: 10px;
-        background: linear-gradient(-45deg, var(--bg) 5px, transparent 0),
-          linear-gradient(45deg, var(--bg) 5px, transparent 0);
-        background-size: 12px 12px;
+
+        height: 15px;
+
+        background: linear-gradient(-45deg, var(--bg) 8px, transparent 0),
+          linear-gradient(45deg, var(--bg) 8px, transparent 0);
+
+        background-size: 16px 16px;
+
         display: none;
       }
 
-      /* Final 3-column Layout for Download */
+      /* --- Final Reveal Style (Download) --- */
+
       #poster-area.final-reveal {
-        width: 650px;
+        width: 700px;
+
+        transform: rotateX(0deg) !important;
       }
+
       #poster-area.final-reveal .gallery-wrapper {
         grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
+
+        gap: 20px;
       }
+
       #poster-area.final-reveal .item-row {
-        max-height: 800px !important;
+        max-height: none !important;
+
         opacity: 1 !important;
+
         filter: none !important;
+
         padding: 10px 0 !important;
+
         border-bottom: 1px solid #eee;
+
+        transform: none !important;
+
+        margin-bottom: 0;
       }
+
+      #poster-area.final-reveal .item-row.folded .img-container {
+        display: block !important;
+      }
+
       #poster-area.final-reveal .zigzag-bottom {
         display: block;
-      }
-      #poster-area.final-reveal .caption-input {
-        border: none;
-        font-size: 10px;
-        text-align: center;
-        padding-top: 5px;
       }
 
       .controls {
         position: fixed;
+
         bottom: 30px;
+
         display: flex;
+
         gap: 10px;
+
         width: 380px;
+
         z-index: 100;
       }
+
       .btn {
         flex: 1;
-        padding: 18px;
+
+        padding: 20px;
+
         border: none;
+
         border-radius: 50px;
-        background: #000;
-        color: #fff;
-        font-weight: bold;
+
+        background: #fff;
+
+        color: #000;
+
+        font-weight: 900;
+
         cursor: pointer;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
         font-family: inherit;
+
         text-transform: uppercase;
-        font-size: 11px;
+
+        font-size: 12px;
+
+        transition: 0.3s;
       }
+
+      .btn:hover {
+        transform: translateY(-3px);
+
+        background: #eee;
+      }
+
       #save-btn {
         background: #ff3b30;
+
+        color: white;
+
         display: none;
       }
     </style>
   </head>
+
   <body>
     <div id="poster-area">
       <div class="header-box">
@@ -279,9 +443,9 @@
       <div class="project-description">
         <span class="title">Yearly Checkout: Monthly Archive</span>
 
-        *Select a photo for each month to recall your memory. <br />
-        *Type a short note and press 'Enter' to confirm. <br />
-        *Complete all 12 months to generate your 2025 receipt.
+        *Select a photo for each month to archive your year.<br />
+
+        *Complete 12 months to get your memory poster.
       </div>
 
       <div class="receipt-title">Memory Receipt</div>
@@ -290,11 +454,14 @@
 
       <div id="footer-area">
         <div class="barcode" id="barcode"></div>
+
         <div class="status-box">GOODBYE 2025</div>
-        <div class="footer-note">Moments pass, but records remain.</div>
+
+        <div class="footer-note">YOUR MEMORIES ARE SECURELY ARCHIVED.</div>
+
         <p
           id="current-date"
-          style="font-size: 8px; color: #aaa; margin-top: 20px"
+          style="font-size: 9px; color: #888; margin-top: 25px"
         ></p>
       </div>
 
@@ -303,118 +470,182 @@
 
     <div class="controls">
       <input type="file" id="file-input" hidden accept="image/*" />
-      <button class="btn" id="save-btn">Download Memory Poster</button>
+
+      <button class="btn" id="save-btn">Download Archive</button>
     </div>
 
     <script>
       const gallery = document.getElementById('gallery-container');
+
       const fileInput = document.getElementById('file-input');
+
       const footer = document.getElementById('footer-area');
+
       const saveBtn = document.getElementById('save-btn');
+
       const poster = document.getElementById('poster-area');
 
       const monthNames = [
         'JANUARY',
+
         'FEBRUARY',
+
         'MARCH',
+
         'APRIL',
+
         'MAY',
+
         'JUNE',
+
         'JULY',
+
         'AUGUST',
+
         'SEPTEMBER',
+
         'OCTOBER',
+
         'NOVEMBER',
+
         'DECEMBER',
       ];
+
       let currentIdx = 1;
 
       function createItemRow(idx) {
         const row = document.createElement('div');
+
         row.className = 'item-row active';
+
         row.id = `row-${idx}`;
+
         row.innerHTML = `
-          <div class="item-meta"><span>#${String(idx).padStart(
-            2,
-            '0'
-          )}</span><span>${monthNames[idx - 1]}</span></div>
-          <div class="img-container" onclick="triggerUpload(${idx})">
-            <div id="img-slot-${idx}" class="placeholder-btn">SELECT ${
-          monthNames[idx - 1]
-        } PHOTO</div>
-          </div>
-          <input type="text" class="caption-input" placeholder="Type a memory..." id="input-${idx}" onkeypress="handleNext(event, ${idx})">
-        `;
+
+<div class="item-meta"><span>#${String(idx).padStart(
+          2,
+
+          '0'
+        )}</span><span>${monthNames[idx - 1]}</span></div>
+
+<div class="img-container" onclick="triggerUpload(${idx})">
+
+<div id="img-slot-${idx}" class="placeholder-btn">CLICK TO SELECT PHOTO</div>
+
+</div>
+
+`;
+
         gallery.appendChild(row);
+
+        // 부드럽게 스크롤
+
         setTimeout(() => {
           row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 100);
+        }, 300);
       }
 
       createItemRow(1);
+
       function triggerUpload(idx) {
         if (idx === currentIdx) fileInput.click();
       }
 
       fileInput.onchange = (e) => {
         const file = e.target.files[0];
+
         if (!file) return;
+
         const reader = new FileReader();
+
         reader.onload = (ev) => {
           const slot = document.getElementById(`img-slot-${currentIdx}`);
+
           slot.innerHTML = `<img src="${ev.target.result}">`;
+
           slot.classList.remove('placeholder-btn');
-          document.getElementById(`input-${currentIdx}`).focus();
+
+          setTimeout(() => {
+            proceedToNext();
+          }, 500); // 애니메이션을 즐길 수 있도록 약간 지연
         };
+
         reader.readAsDataURL(file);
       };
 
-      function handleNext(event, idx) {
-        if (event.key === 'Enter') {
-          if (!document.querySelector(`#img-slot-${idx} img`)) {
-            alert('Please upload a photo first!');
-            return;
-          }
-          document
-            .getElementById(`row-${idx}`)
-            .classList.replace('active', 'folded');
-          if (currentIdx < 12) {
-            currentIdx++;
-            createItemRow(currentIdx);
-          } else {
-            showFooter();
-          }
+      function proceedToNext() {
+        const currentRow = document.getElementById(`row-${currentIdx}`);
+
+        currentRow.classList.replace('active', 'folded');
+
+        if (currentIdx < 12) {
+          currentIdx++;
+
+          createItemRow(currentIdx);
+        } else {
+          showFooter();
         }
       }
 
       function showFooter() {
         footer.style.display = 'block';
+
         saveBtn.style.display = 'block';
+
         const bc = document.getElementById('barcode');
+
         bc.innerHTML = '';
-        for (let i = 0; i < 35; i++) {
+
+        // 바코드 선 생성 (더 촘촘하고 다양하게)
+
+        for (let i = 0; i < 60; i++) {
           const line = document.createElement('div');
+
           line.className = 'b-line';
-          line.style.width = Math.random() * 2 + 1 + 'px';
+
+          // 랜덤한 굵기로 바코드 느낌 극대화
+
+          const widths = [1, 1, 2, 3, 1, 4];
+
+          line.style.width =
+            widths[Math.floor(Math.random() * widths.length)] + 'px';
+
           bc.appendChild(line);
         }
+
         document.getElementById('current-date').innerText =
-          new Date().toLocaleString('en-US');
+          'ISSUE DATE: ' + new Date().toLocaleString('en-US').toUpperCase();
+
+        setTimeout(() => {
+          footer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 200);
       }
 
       saveBtn.onclick = () => {
         poster.classList.add('final-reveal');
+
         setTimeout(() => {
-          html2canvas(poster, { scale: 3, useCORS: true }).then((canvas) => {
+          html2canvas(poster, {
+            scale: 3,
+
+            useCORS: true,
+
+            logging: false,
+
+            backgroundColor: '#ffffff',
+          }).then((canvas) => {
             const link = document.createElement('a');
-            link.download = '2025_Memory_Archive.png';
-            link.href = canvas.toDataURL();
+
+            link.download = '2025_Memory_Receipt.png';
+
+            link.href = canvas.toDataURL('image/png');
+
             link.click();
+
             poster.classList.remove('final-reveal');
           });
-        }, 800);
+        }, 1200);
       };
     </script>
   </body>
 </html>
-
