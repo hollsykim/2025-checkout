@@ -389,7 +389,7 @@
 
       function showFooter() {
         footer.style.display = 'block';
-        saveBtn.style.display = 'block';
+        .style.display = 'block';
         const bc = document.getElementById('barcode');
         bc.innerHTML = '';
         for (let i = 0; i < 35; i++) {
@@ -402,19 +402,41 @@
           new Date().toLocaleString('en-US');
       }
 
-      saveBtn.onclick = () => {
-        poster.classList.add('final-reveal');
-        setTimeout(() => {
-          html2canvas(poster, { scale: 3, useCORS: true }).then((canvas) => {
-            const link = document.createElement('a');
-            link.download = '2025_Memory_Archive.png';
-            link.href = canvas.toDataURL();
-            link.click();
-            poster.classList.remove('final-reveal');
+        saveBtn.onclick = async () => {
+          poster.classList.add('final-reveal');
+        
+          // wait for layout + images to settle
+          await waitForImages(poster);
+        
+          const canvas = await html2canvas(poster, {
+            scale: 3,
+            useCORS: true,
+            backgroundColor: '#ffffff',
           });
+        
+          const link = document.createElement('a');
+          link.download = '2025_Memory_Archive.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        
+          poster.classList.remove('final-reveal');
+        };
         }, 800);
       };
     </script>
+
+        function waitForImages(container) {
+      const images = container.querySelectorAll('img');
+      return Promise.all(
+        Array.from(images).map((img) => {
+          if (img.complete) return Promise.resolve();
+          return new Promise((resolve) => {
+            img.onload = img.onerror = resolve;
+          });
+        })
+      );
+    }
+
   </body>
 </html>
 
